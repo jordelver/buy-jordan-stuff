@@ -1,2 +1,9 @@
-Hello, world!
+<h1>Buy Jordan Stuff!</h1>
 
+<% @wishlist.each do |item| %>
+  <h2>
+    <a href="<%= item.href %>">
+      <%= item.description %>
+    </a>
+  </h2>
+<% end %>
