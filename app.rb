@@ -18,9 +18,12 @@ class Pinboard
 
   def all(options = {})
     json = RestClient.get(API_URL, { params: request_params(options) })
+    parse_json(json)
+  end
 
-    JSON.parse(json).map do |bookmark|
-      Bookmark.new(bookmark["description"], bookmark['href'], bookmark['time'])
+  def parse_json(json)
+    JSON.parse(json).map do |item|
+      Bookmark.new(item['description'], item['href'], item['time'])
     end
   end
 
@@ -39,8 +42,14 @@ end
 Bookmark = Struct.new(:description, :href, :time)
 
 class Wishlist
+  attr_reader :pinboard
+
+  def initialize(options = {})
+    @pinboard ||= Pinboard.new
+  end
+
   def items
-    Pinboard.new.all(tag: 'wishlist')
+    pinboard.all(tag: 'wishlist')
   end
 end
 
